@@ -9,11 +9,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/hello/{name}")
-     * @Template()
+     * @Route("/toto")
      */
-    public function indexAction($name)
+    public function indexAction()
     {
-        return array('name' => $name);
+        $pp = $this->get('imag_etherpad.pad_provider');
+        $pad = new \IMAG\EtherpadBundle\Model\Pad;
+        $pad->setId('toto');
+        $pp
+            ->setPad($pad)
+            ->createPad();
     }
 }

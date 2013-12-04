@@ -4,17 +4,29 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
     <parameters>
-        <parameter key="imag_etherpad.example.class">IMAG\EtherpadBundle\Example</parameter>
+        <parameter key="imag_etherpad.context.class">IMAG\EtherpadBundle\Context</parameter>
+        <parameter key="imag_etherpad.url_manager.class">IMAG\EtherpadBundle\Manager\UrlManager</parameter>
+        <parameter key="imag_etherpad.pad_provider.class">IMAG\EtherpadBundle\Provider\PadProvider</parameter>
     </parameters>
 
     <services>
-        <service id="imag_etherpad.example" class="%imag_etherpad.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="imag_etherpad.context" class="%imag_etherpad.context.class%">
+          <call method="setConfig">
+            <argument>%imag_etherpad.config%</argument>
+          </call>
         </service>
+
+        <service id="imag_etherpad.url_manager" class="%imag_etherpad.url_manager.class%">
+          <argument type="service" id="imag_etherpad.context" />
+        </service>
+          
+        <service id="imag_etherpad.abstract_provider" abstract="true">
+          <argument type="service" id="imag_etherpad.url_manager" />
+        </service>
+
+        <service id="imag_etherpad.pad_provider" class="%imag_etherpad.pad_provider.class%" parent="imag_etherpad.abstract_provider"/>
+        
     </services>
-    -->
+
 </container>
