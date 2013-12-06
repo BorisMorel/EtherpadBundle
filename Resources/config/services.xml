@@ -6,8 +6,17 @@
 
     <parameters>
         <parameter key="imag_etherpad.context.class">IMAG\EtherpadBundle\Context</parameter>
+
         <parameter key="imag_etherpad.url_manager.class">IMAG\EtherpadBundle\Manager\UrlManager</parameter>
+
         <parameter key="imag_etherpad.pad_provider.class">IMAG\EtherpadBundle\Provider\PadProvider</parameter>
+        <parameter key="imag_etherpad.pads_provider.class">IMAG\EtherpadBundle\Provider\PadsProvider</parameter>
+        <parameter key="imag_etherpad.group_provider.class">IMAG\EtherpadBundle\Provider\GroupProvider</parameter>
+        <parameter key="imag_etherpad.groups_provider.class">IMAG\EtherpadBundle\Provider\GroupsProvider</parameter>
+        <parameter key="imag_etherpad.session_provider.class">IMAG\EtherpadBundle\Provider\SessionProvider</parameter>
+        <parameter key="imag_etherpad.author_provider.class">IMAG\EtherpadBundle\Provider\AuthorProvider</parameter>
+
+
     </parameters>
 
     <services>
@@ -19,6 +28,7 @@
 
         <service id="imag_etherpad.url_manager" class="%imag_etherpad.url_manager.class%">
           <argument type="service" id="imag_etherpad.context" />
+          <argument type="service" id="buzz" />
         </service>
           
         <service id="imag_etherpad.abstract_provider" abstract="true">
@@ -26,6 +36,11 @@
         </service>
 
         <service id="imag_etherpad.pad_provider" class="%imag_etherpad.pad_provider.class%" parent="imag_etherpad.abstract_provider"/>
+        <service id="imag_etherpad.pads_provider" class="%imag_etherpad.pads_provider.class%" parent="imag_etherpad.abstract_provider"/>
+        <service id="imag_etherpad.group_provider" class="%imag_etherpad.group_provider.class%" parent="imag_etherpad.abstract_provider"/>
+        <service id="imag_etherpad.groups_provider" class="%imag_etherpad.groups_provider.class%" parent="imag_etherpad.abstract_provider"/>
+        <service id="imag_etherpad.session_provider" class="%imag_etherpad.session_provider.class%" parent="imag_etherpad.abstract_provider"/>
+        <service id="imag_etherpad.author_provider" class="%imag_etherpad.author_provider.class%" parent="imag_etherpad.abstract_provider"/>
         
     </services>
 
