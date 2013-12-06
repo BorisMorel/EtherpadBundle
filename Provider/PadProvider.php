@@ -32,90 +32,30 @@ class PadProvider extends AbstractProvider
     {
         return array(
             'createPad' => array(
-                'padId' => 'getId',
+                'padID' => 'getId',
                 'text' => 'getText',
             ),
-            'getRevisionsCount' => array('padId' => 'getId'),
-            'padUsersCount',
-            'padUsers',
-            'deletePad',
-            'getReadOnlyId',
-            'setPublicStatus',
-            'getPublicStatus',
-            'setPassword',
-            'isPasswordProtected',
-            'listAuthorsOfPad',
-            'getLastEdited',
-            'sendClientMessage',
+            'getRevisionsCount' => array('padID' => 'getId'),
+            'padUsersCount' => array('padID' => 'getId'),
+            'padUsers' => array('padID' => 'getId'),
+            'deletePad' => array('padID' => 'getId'),
+            'getReadOnlyID' => array('padID' => 'getId'),
+            'setPublicStatus' => array(
+                'padID' => 'getId',
+                'publicStatus' => 'getStatus',
+            ),
+            'getPublicStatus' => array('padID' => 'getId'),
+            'setPassword' => array(
+                'padID' => 'getId',
+                'password' => 'getPassword',
+            ),
+            'isPasswordProtected' => array('padID' => 'getId'),
+            'listAuthorsOfPad' => array('padID' => 'getId'),
+            'getLastEdited' => array('padID' => 'getId'),
+            'sendClientMessage' => array(
+                'padID' => 'getId',
+                'msg' => 'getMessage',
+            ),
         );
     }
-
-    /*
-
-    public function createPad()
-    {
-        $this->urlManager->requestApi($this, __METHOD__);
-    }
-
-    public function getRevisionsCount()
-    {
-
-    }
-
-    public function padUsersCount()
-    {
-
-    }
-
-    public function padUsers()
-    {
-
-    }
-
-    public function deletePad()
-    {
-
-    }
-
-    public function getReadOnlyId()
-    {
-
-    }
-
-    public function setPublicStatus($status)
-    {
-
-    }
-
-    public function getPublicStatus()
-    {
-
-    }
-
-    public function setPassword($password)
-    {
-
-    }
-
-    public function isPasswordProtected()
-    {
-
-    }
-
-    public function listAuthorsOfPad()
-    {
-
-    }
-
-    public function getLastEdited()
-    {
-
-    }
-
-    public function sendClientMessage($message)
-    {
-
-    }
-
-    */
 }

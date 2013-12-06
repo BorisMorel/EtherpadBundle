@@ -2,10 +2,17 @@
 
 namespace IMAG\EtherpadBundle\Provider;
 
-class PadsProvider implements ProviderInterface
+class PadsProvider extends AbstractProvider
 {
-    public function listAllPads()
+    public function getModel()
     {
+        return null;
+    }
 
+    public function getDefinedMethods()
+    {
+        return array(
+            'listAllPads' => array(),
+        );
     }
 }
