@@ -14,12 +14,20 @@ class Pad
      */
     private $text;
 
+    /**
+     * @var string
+     */
+    private $password;
 
-    public function __construct($id = null, $text = null)
-    {
-        $this->id = $id;
-        $this->text = $text;
-    }
+    /**
+     * @var string
+     */
+    private $status;
+
+    /**
+     * @var string
+     */
+    private $message;
 
     public function setId($id)
     {
@@ -43,5 +51,41 @@ class Pad
     public function getText()
     {
         return $this->text;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setMessage($message)
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
     }
 }
