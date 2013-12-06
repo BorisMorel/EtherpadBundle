@@ -3,6 +3,7 @@
 namespace IMAG\EtherpadBundle\Provider;
 
 use IMAG\EtherpadBundle\Manager\UrlManager;
+use IMAG\EtherpadBundle\Exception;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -20,14 +21,14 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $methods = $this->getDefinedMethods();
         
-        if (false === isset($methods[$method])) {
-            throw new \BadMethodCallExcpetion();
+        if (false === array_key_exists($method, $methods)) {
+            throw new Exception\BadMethodCallException('Method isn\'t defined');
         }
 
-        if (null === $this->getModel()) {
-            throw new \InvalidArgumentException();
+        if (!empty($methods[$method]) && null === $this->getModel()) {
+            throw new Exception\InvalidArgumentException(sprintf('Model isn\'t provided: class %s', get_class($this)));
         }
 
-        $this->urlManager->requestApi($this, $method, $methods[$method]);
+       return  $this->urlManager->requestApi($this, $method, $methods[$method]);
     }
 }
