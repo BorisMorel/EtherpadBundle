@@ -36,8 +36,8 @@ class AuthorProvider extends AbstractProvider
                 'authorMapper' => 'getId',
                 'name' => 'getName',
             ),
-            'listPadsOfAuthor' => array('authorID' => 'getId'),
-            'getAuthorName' => array('authorID' => 'getId'),
+            'listPadsOfAuthor' => array('authorID' => 'getApiId'),
+            'getAuthorName' => array('authorID' => 'getApiId'),
         );
     }
 }

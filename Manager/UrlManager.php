@@ -72,7 +72,7 @@ class UrlManager
         $content = json_decode($response->getContent());
         
         if (null === $content) {
-            throw new Exception\InvalidArgumentException(sprintf('Response is wrong for url: %s', $url));
+            throw new Exception\RuntimeException(sprintf('Response is wrong for url: %s', $url));
         }
         
         switch($content->code) {
