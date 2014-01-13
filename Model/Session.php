@@ -26,6 +26,11 @@ class Session
      */
     private $group;
 
+    public function __construct()
+    {
+        $this->validUntil = new \Datetime("+1 day");
+    }
+
     public function setId($id)
     {
         $this->id = $id;
@@ -55,7 +60,7 @@ class Session
         return $this->validUntil->getTimeStamp();
     }
 
-    public function setAuthor(Author $author)
+    public function setAuthor(AuthorInterface $author)
     {
         $this->author = $author;
 
@@ -71,7 +76,7 @@ class Session
         return $this->author;
     }
 
-    public function setGroup(Group $group)
+    public function setGroup(GroupInterface $group)
     {
         $this->group = $group;
 
