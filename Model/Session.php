@@ -4,12 +4,12 @@ namespace IMAG\EtherpadBundle\Model;
 
 use IMAG\EtherpadBundle\Exception\InvalidArgumentException;
 
-class Session
+class Session implements SessionInterface
 {
     /**
      * @var id
      */
-    private $id;
+    private $etherpadId;
     
     /**
      * @var \Datetime
@@ -31,16 +31,21 @@ class Session
         $this->validUntil = new \Datetime("+1 day");
     }
 
-    public function setId($id)
+    public function getId()
     {
-        $this->id = $id;
+        return null;
+    }
+
+    public function setEtherpadId($etherpadId)
+    {
+        $this->etherpadId = $etherpadId;
 
         return $this;
     }
         
-    public function getId()
+    public function getEtherpadId()
     {
-        return $this->id;
+        return $this->etherpadId;
     }    
 
     public function setValidUntil(\Datetime $validUntil)

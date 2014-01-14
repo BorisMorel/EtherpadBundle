@@ -2,13 +2,18 @@
 
 namespace IMAG\EtherpadBundle\Model;
 
-class Pad
+class Pad implements PadInterface
 {
     /**
      * @var id
      */
     private $id;
 
+    /**
+     * @var id
+     */
+    private $etherpadId;
+    
     /**
      * @var string
      */
@@ -40,6 +45,18 @@ class Pad
     {
         return $this->id;
     }    
+    
+    public function setEtherpadId($etherpadId)
+    {
+        $this->etherpadId = $etherpadId;
+        
+        return $this;
+    }
+    
+    public function getEtherpadId()
+    {
+        return $this->etherpadId;
+    }
 
     public function setText($text)
     {

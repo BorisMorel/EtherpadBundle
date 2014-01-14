@@ -4,7 +4,7 @@ namespace IMAG\EtherpadBundle\Model;
 
 use IMAG\EtherpadBundle\Exception\InvalidArgumentException;
 
-class Group
+class Group implements GroupInterface
 {
     /**
      * @var id
@@ -14,13 +14,18 @@ class Group
     /**
      * @var id
      */
-    private $apiId;
-
+    private $etherpadId;
+    
     /**
-     * @var \IMAG\EtherpadBundle\Model\Pad
+     * @var \IMAG\EtherpadBundle\Model\ArrayCollection $pads
      */
-    private $pad;
+    private $pads;
 
+    public function __construct()
+    {
+        $this->pads = new ArrayCollection();
+    }
+    
     public function setId($id)
     {
         $this->id = $id;
@@ -33,31 +38,27 @@ class Group
         return $this->id;
     }    
 
-    public function setApiId($apiId)
+    public function setEtherpadId($etherpadId)
     {
-        $this->apiId = $apiId;
+        $this->etherpadId = $etherpadId;
 
         return $this;
     }
         
-    public function getApiId()
+    public function getEtherpadId()
     {
-        return $this->apiId;
+        return $this->etherpadId;
     }
-
-    public function setPad(Pad $pad)
+    
+    public function addPad(Pad $pad)
     {
-        $this->pad = $pad;
-
+        $this->pads[] = $pad;
+        
         return $this;
     }
-        
-    public function getPad()
+    
+    public function getPads()
     {
-        if (null === $this->pad) {
-            throw new InvalidArgumentException('\IMAG\EtherpadBundle\Model\Group::getPad() is null');
-        }
-
-        return $this->pad;
+        return $this->pads;
     }
 }

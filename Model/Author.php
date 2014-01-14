@@ -4,7 +4,7 @@ namespace IMAG\EtherpadBundle\Model;
 
 use IMAG\EtherpadBundle\Exception\InvalidArgumentException;
 
-class Author
+class Author implements AuthorInterface
 {
     /**
      * @var id
@@ -14,13 +14,22 @@ class Author
     /**
      * @var id
      */
-    private $apiId;
+    private $etherpadId;
     
     /**
      * @var string
      */
     private $name;
     
+    /**
+     * @var \IMAG\EtherpadBundle\Model\ArrayCollection $pads
+     */
+    private $pads;
+    
+    public function __construct()
+    {
+        $this->pads = new ArrayCollection();
+    }
 
     public function setId($id)
     {
@@ -34,14 +43,14 @@ class Author
         return $this->id;
     }    
 
-    public function setApiId($apiId)
+    public function setEtherpadId($apiId)
     {
         $this->apiId = $apiId;
 
         return $this;
     }
         
-    public function getApiId()
+    public function getEtherpadId()
     {
         return $this->apiId;
     }    
@@ -56,5 +65,17 @@ class Author
     public function getName()
     {
         return $this->name;
+    }
+
+    public function addPad(PadInterface $pad)
+    {
+        $this->pads[] = $pad;
+
+        return $this;
+    }
+
+    public function getPads()
+    {
+        return $this->pads;
     }
 }
