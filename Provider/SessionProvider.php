@@ -2,52 +2,81 @@
 
 namespace IMAG\EtherpadBundle\Provider;
 
-use IMAG\EtherpadBundle\Model\Session;
+use IMAG\EtherpadBundle\Model\SessionInterface,
+    IMAG\EtherpadBundle\Model\Group,
+    IMAG\EtherpadBundle\Model\Author
+    ;
 
 class SessionProvider extends AbstractProvider
 {
-    /**
-     * @var \IMAG\EtherpadBundle\Model\Session
-     */
-    private $session;
-
-    public function setSession(Session $session)
+    public function createSession(SessionInterface $session)
     {
-        $this->session = $session;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'authorID' => $session->getAuthor()->getEtherpadId(),
+            'groupID' => $session->getGroup()->getEtherpadId(),
+            'validUntil' => $session->getValidUntilTS(),
+        ));
+        
+        $session->setEtherpadId($api->sessionID);
 
-        return $this;
+        return true;
+        
     }
 
-    public function getSession()
+    public function deleteSession(SessionInterface $session)
     {
-        return $this->session;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'sessionID' => $session->getEhterpadId(),
+        ));
+
+        return true;
+        
     }
 
-    public function getModel()
+    public function getSessionInfo(SessionInterface $session)
     {
-        return $this->session;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'sessionID' => $session->getEtherpadId(),
+        ));
+
+        $author = new Author();
+        $group = new Group();
+        $datetime = new \Datetime();
+        
+        $session
+            ->setAuthor($author->setEtherpadId($api->data->authorID))
+            ->setGroup($group->setEtherpadId($api->data->groupID))
+            ->setValidUntil($datetime->setTimestamp($api->data->validUntil))
+            ;
+
+        return true;
     }
 
-    public function getDefinedMethods()
+    public function listSessionsOfGroup(SessionInterface $session)
     {
-        return array(
-            'createSession' => array(
-                'groupID' => array('getGroup', 'getApiId'),
-                'authorID' => array('getAuthor', 'getApiId'),
-                'validUntil' => 'getValidUntilTS',
-            ),
-            'deleteSession' => array(
-                'sessionID' => 'getId',
-            ),
-            'getSessionInfo' => array(
-                'sessionID' => 'getId',
-            ),
-            'listSessionsOfGroup' => array(
-                'groupID' => array('getGroup', 'getId'),
-            ),
-            'listSessionOfAuthor' => array(
-                'authorID' => array('getAuthor', 'getId'),
-            ),
-        );
+        throw new \BadMethodCallException("Must be implemented");
+
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'groupID' => $session->getGroup()->getEtherpadId(),
+        ));
+        
+        // Store result ??? 
+        // Implement here !
+
+        return true;
+    }
+
+    public function listSessionsOfAuthor(SessionInterface $session)
+    {
+        throw new \BadMethodCallException("Must be implemented");
+
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'authorID' => $session->getAuthor()->getEtherpadId(),
+        ));
+
+        // Store result ???
+        // Implement here !
+
+        return true;
     }
 }

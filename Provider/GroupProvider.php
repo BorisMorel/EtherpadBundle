@@ -2,44 +2,66 @@
 
 namespace IMAG\EtherpadBundle\Provider;
 
-use IMAG\EtherpadBundle\Model\Group;
+use IMAG\EtherpadBundle\Model\GroupInterface,
+    IMAG\EtherpadBundle\Model\PadInterface,
+    IMAG\EtherpadBundle\Model\Pad
+    ;
 
 class GroupProvider extends AbstractProvider
 {
-    /**
-     * @var \IMAG\EtherpadBundle\Model\Group
-     */
-    private $group;
-
-    public function setGroup(Group $group)
+    public function createGroup(GroupInterface $group)
     {
-        $this->group = $group;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array());
 
-        return $this;
+        $group->setEtherpadId($api->groupID);
+        
+        return true;
     }
 
-    public function getGroup()
+    public function createGroupIfNotExistsFor(GroupInterface $group)
     {
-        return $this->group;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'groupMapper' => $group->getId(),
+        ));
+
+        $group->setEtherpadId($api->groupID);
+        
+        return true;
     }
 
-    public function getModel()
+    public function deleteGroup(GroupInterface $group)
     {
-        return $this->group;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'groupMapper' => $group->getId(),
+        ));
+
+        return true;
     }
 
-    public function getDefinedMethods()
+    public function listPads(GroupInterface $group)
     {
-        return array(
-            'createGroup' => array(),
-            'createGroupIfNotExistsFor' => array('groupMapper' => 'getId'),
-            'deleteGroup' => array('groupID' => 'getId'),
-            'listPads' => array('groupID' => 'getId'),
-            'createGroupPad' => array(
-                'groupID' => 'getApiId',
-                'padName' => array('getPad', 'getId'),
-                'text' => array('getPad', 'getText'),
-            ),
-        );
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'groupMapper' => $group->getId(),
+        ));
+
+        foreach ($api->padIDs as $item) {
+            $pad = new Pad();
+            $pad->setEtherpadId($item);
+            
+            $group->addPad($pad);
+        }
+
+        return true;
+    }
+
+    public function createGroupPad(GroupInterface $group, PadInterface $pad)
+    {
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'groupID' => $group->getEtherpadId(),
+            'padName' => $pad->getName(),
+            'text' => $pad->getText(),
+        ));
+
+        return true;
     }
 }

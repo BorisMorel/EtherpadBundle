@@ -27,7 +27,7 @@ class UrlManager
         $this->buzz = $buzz;
     }
 
-    public function requestApi(ProviderInterface $class, $method, array $params = null)
+    public function requestApi($method, array $params = null)
     {
         $url = sprintf('%s/%s?apikey=%s',
                        $this->context->getApiUri(),
@@ -35,34 +35,16 @@ class UrlManager
                        $this->context->getApiKey());
 
         foreach ($params as $key => $param) {
-            $obj = $class->getModel();
-            
-            if (false === is_array($param)) {
-                $param = array($param);
-            }
-            
-            foreach ($param as $p) {
-                $refMethod = new \ReflectionMethod($obj, $p);
-
-                try {
-                    $obj = $refMethod->invoke($obj);
-                } catch (Exception\InvalidArgumentException $expt) {
-                    throw new Exception\InvalidArgumentException($expt->getMessage(), 0, $expt);
-                }
-            }
-            
-            if (null !== $obj) {
+            if (null !== $param) {
                 $url .= '&'
                     .$key
                     .'='
-                    .$obj
+                    .$param
                     ;
             }
         }
-                
-        $data = $this->sendRequest($url);
 
-        return $data;
+        return $this->sendRequest($url);
     }
 
     private function sendRequest($url)

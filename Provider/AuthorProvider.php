@@ -2,42 +2,59 @@
 
 namespace IMAG\EtherpadBundle\Provider;
 
-use IMAG\EtherpadBundle\Model\Author;
+use IMAG\EtherpadBundle\Model\AuthorInterface,
+    IMAG\EtherpadBundle\Model\Pad
+    ;
 
 class AuthorProvider extends AbstractProvider
 {
-    /**
-     * @var \IMAG\EtherpadBundle\Model\Author
-     */
-    private $author;
-
-    public function setAuthor(Author $author)
+    public function createAuthorIfNotExistsFor(AuthorInterface $author)
     {
-        $this->author = $author;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'authorMapper' => $author->getId(),
+            'name' => $author->getName(),
+        ));
 
-        return $this;
+        $author->setEtherpadId($api->authorID);
+
+        return true;
     }
 
-    public function getAuthor()
+    public function createAuthor(AuthorInterface $author)
     {
-        return $this->author;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'name' => $author->getName(),
+        ));
+
+        $author->setEtherpadId($api->authorID);
+
+        return true;
     }
 
-    public function getModel()
+    public function listPadsOfAuthor(AuthorInterface $author)
     {
-        return $this->author;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'authorID' => $author->getEtherpadId(),
+        ));
+
+        foreach ($api->padIDs as $item) {
+            $pad = new Pad();
+            $pad->setEtherpadId($item);
+            xdebug_break();
+            $author->addPad($pad);
+        }
+
+        return true;
     }
 
-    public function getDefinedMethods()
+    public function getAuthorName(AuthorInterface $author)
     {
-        return array(
-            'createAuthor' => array('name' => 'getName'),
-            'createAuthorIfNotExistsFor' => array(
-                'authorMapper' => 'getId',
-                'name' => 'getName',
-            ),
-            'listPadsOfAuthor' => array('authorID' => 'getApiId'),
-            'getAuthorName' => array('authorID' => 'getApiId'),
-        );
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'authorID' => $author->getEtherpadId(),
+        ));
+        
+        $author->setName($api->authorName);
+        
+        return true;
     }
 }
