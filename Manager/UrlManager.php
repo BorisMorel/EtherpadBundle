@@ -4,7 +4,6 @@ namespace IMAG\EtherpadBundle\Manager;
 
 use IMAG\EtherpadBundle\Context;
 
-use IMAG\EtherpadBundle\Provider\ProviderInterface;
 use IMAG\EtherpadBundle\Exception;
 
 use Buzz\Browser;
