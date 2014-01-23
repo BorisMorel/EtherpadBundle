@@ -40,7 +40,6 @@ class ArrayCollection implements \Iterator, \ArrayAccess
     public function contains($element)
     {
         foreach ($this->_elements as $collectionElement) {
-            xdebug_break();
             if ($element === $collectionElement) {
                 return true;
             }
@@ -71,7 +70,10 @@ class ArrayCollection implements \Iterator, \ArrayAccess
         return null;
     }
 
- 
+    public function toArray()
+    {
+        return $this->_elements;
+    }
     /**
      * inherit \Iterator
      */
