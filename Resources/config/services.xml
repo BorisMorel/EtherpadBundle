@@ -36,11 +36,24 @@
         </service>
 
         <service id="imag_etherpad.pad_provider" class="%imag_etherpad.pad_provider.class%" parent="imag_etherpad.abstract_provider"/>
+
         <service id="imag_etherpad.pads_provider" class="%imag_etherpad.pads_provider.class%" parent="imag_etherpad.abstract_provider"/>
-        <service id="imag_etherpad.group_provider" class="%imag_etherpad.group_provider.class%" parent="imag_etherpad.abstract_provider"/>
+
+        <service id="imag_etherpad.group_provider" class="%imag_etherpad.group_provider.class%" parent="imag_etherpad.abstract_provider">
+          <call method="setPadProvider">
+            <argument type="service" id="imag_etherpad.pad_provider" />
+          </call>
+        </service>
+        
         <service id="imag_etherpad.groups_provider" class="%imag_etherpad.groups_provider.class%" parent="imag_etherpad.abstract_provider"/>
+
         <service id="imag_etherpad.session_provider" class="%imag_etherpad.session_provider.class%" parent="imag_etherpad.abstract_provider"/>
-        <service id="imag_etherpad.author_provider" class="%imag_etherpad.author_provider.class%" parent="imag_etherpad.abstract_provider"/>
+
+        <service id="imag_etherpad.author_provider" class="%imag_etherpad.author_provider.class%" parent="imag_etherpad.abstract_provider">
+          <call method="setPadProvider">
+            <argument type="service" id="imag_etherpad.pad_provider" />
+          </call>
+        </service>
         
     </services>
 
