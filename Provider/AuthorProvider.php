@@ -3,11 +3,22 @@
 namespace IMAG\EtherpadBundle\Provider;
 
 use IMAG\EtherpadBundle\Model\AuthorInterface,
+    IMAG\EtherpadBundle\Model\PadInterface,
     IMAG\EtherpadBundle\Model\Pad
     ;
 
 class AuthorProvider extends AbstractProvider
 {
+    /**
+     * @var \IMAG\EtherpadBundle\Provider\PadProvider
+     */
+    private $padProvider;
+
+    public function setPadProvider(PadProvider $padProvider)
+    {
+        $this->padProvider = $padProvider;
+    }
+
     public function createAuthorIfNotExistsFor(AuthorInterface $author)
     {
         $api = $this->urlManager->requestApi(__FUNCTION__, array(
@@ -40,7 +51,8 @@ class AuthorProvider extends AbstractProvider
         foreach ($api->padIDs as $item) {
             $pad = new Pad();
             $pad->setEtherpadId($item);
-            xdebug_break();
+            $this->padProvider->loadPad($pad);
+            
             $author->addPad($pad);
         }
 
@@ -56,5 +68,10 @@ class AuthorProvider extends AbstractProvider
         $author->setName($api->authorName);
         
         return true;
+    }
+
+    private function loadPad(PadInterface $pad)
+    {
+        $this->padProvider->getLastEdited($pad);
     }
 }
