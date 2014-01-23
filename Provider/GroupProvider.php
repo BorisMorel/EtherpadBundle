@@ -9,6 +9,16 @@ use IMAG\EtherpadBundle\Model\GroupInterface,
 
 class GroupProvider extends AbstractProvider
 {
+    /**
+     * @var \IMAG\EtherpadBundle\Provider\PadProvider
+     */
+    private $padProvider;
+
+    public function setPadProvider(PadProvider $padProvider)
+    {
+        $this->padProvider = $padProvider;
+    }
+
     public function createGroup(GroupInterface $group)
     {
         $api = $this->urlManager->requestApi(__FUNCTION__, array());
@@ -21,7 +31,7 @@ class GroupProvider extends AbstractProvider
     public function createGroupIfNotExistsFor(GroupInterface $group)
     {
         $api = $this->urlManager->requestApi(__FUNCTION__, array(
-            'groupMapper' => $group->getId(),
+            'groupMapper' => $group->getName(),
         ));
 
         $group->setEtherpadId($api->groupID);
@@ -32,7 +42,7 @@ class GroupProvider extends AbstractProvider
     public function deleteGroup(GroupInterface $group)
     {
         $api = $this->urlManager->requestApi(__FUNCTION__, array(
-            'groupMapper' => $group->getId(),
+            'groupID' => $group->getEtherpadId(),
         ));
 
         return true;
@@ -41,13 +51,19 @@ class GroupProvider extends AbstractProvider
     public function listPads(GroupInterface $group)
     {
         $api = $this->urlManager->requestApi(__FUNCTION__, array(
-            'groupMapper' => $group->getId(),
+            'groupID' => $group->getEtherpadId(),
         ));
 
         foreach ($api->padIDs as $item) {
             $pad = new Pad();
-            $pad->setEtherpadId($item);
-            
+            $pad
+                ->setEtherpadId($item)
+                ->setGroup($group)
+                ;
+
+
+            $this->padProvider->loadPad($pad);
+
             $group->addPad($pad);
         }
 
