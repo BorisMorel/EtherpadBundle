@@ -8,13 +8,11 @@ interface GroupInterface
 {
     public function __construct();
 
-    public function getId();
+    public function getName();
 
     public function setEtherpadId($id);
 
     public function getEtherpadId();
-
-    public function getName();
 
     public function addPad(Pad $pad);
     

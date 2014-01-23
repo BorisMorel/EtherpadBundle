@@ -7,9 +7,9 @@ use IMAG\EtherpadBundle\Exception\InvalidArgumentException;
 class Group implements GroupInterface
 {
     /**
-     * @var id
+     * @var name
      */
-    private $id;
+    private $name;
 
     /**
      * @var id
@@ -26,16 +26,16 @@ class Group implements GroupInterface
         $this->pads = new ArrayCollection();
     }
     
-    public function setId($id)
+    public function setName($name)
     {
-        $this->id = $id;
+        $this->name = $name;
 
         return $this;
     }
         
-    public function getId()
+    public function getName()
     {
-        return $this->id;
+        return $this->name;
     }    
 
     public function setEtherpadId($etherpadId)
