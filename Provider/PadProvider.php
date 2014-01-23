@@ -2,30 +2,24 @@
 
 namespace IMAG\EtherpadBundle\Provider;
 
-use IMAG\EtherpadBundle\Model\Pad;
+use IMAG\EtherpadBundle\Model\PadInterface;
 
 class PadProvider extends AbstractProvider
 {
-    /**
-     * @var \IMAG\EtherpadBundle\Model\Pad
-     */
-    private $pad;
-
-    public function setPad(Pad $pad)
+    public function getLastEdited(PadInterface $pad)
     {
-        $this->pad = $pad;
+        $api = $this->urlManager->requestApi(__FUNCTION__, array(
+            'padID' => $pad->getEtherpadId(),
+        ));
 
-        return $this;
+        $pad->setLastEditedTS($api->lastEdited);
+
+        return true;
     }
 
-    public function getPad()
+    public function loadPad(PadInterface $pad)
     {
-        return $this->pad;
-    }
-
-    public function getModel()
-    {
-        return $this->pad;
+        $this->getLastEdited($pad);
     }
 
     public function getDefinedMethods()
