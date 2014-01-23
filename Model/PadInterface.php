@@ -4,7 +4,9 @@ namespace IMAG\EtherpadBundle\Model;
 
 interface PadInterface
 {
-    public function getId();
+    public function getName();
+
+    public function getGroup();
 
     public function setEtherpadId($etherpadId);
 

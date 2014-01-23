@@ -2,12 +2,17 @@
 
 namespace IMAG\EtherpadBundle\Model;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
+use IMAG\EtherpadBundle\Model\GroupInterface;
+
 class Pad implements PadInterface
 {
     /**
-     * @var id
+     * @Assert\Type("string")
+     * @Assert\NotBlank()
      */
-    private $id;
+    private $name;
 
     /**
      * @var id
@@ -34,18 +39,29 @@ class Pad implements PadInterface
      */
     private $message;
 
-    public function setId($id)
+    /**
+     * @var Timestamp
+     */
+    private $lastEditedTS;
+
+    /**
+     * @Assert\NotNull()
+     */
+    private $group;
+
+    public function setName($name)
     {
-        $this->id = $id;
+        $this->name = $name;
 
         return $this;
     }
         
-    public function getId()
+    public function getName()
     {
-        return $this->id;
+        return $this->name;
     }    
     
+
     public function setEtherpadId($etherpadId)
     {
         $this->etherpadId = $etherpadId;
@@ -104,5 +120,36 @@ class Pad implements PadInterface
     public function getMessage()
     {
         return $this->message;
+    }
+
+    public function setLastEditedTS($lastEditedTS)
+    {
+        $this->lastEditedTS = $lastEditedTS;
+
+        return $this;
+    }
+
+    public function getLastEditedTS()
+    {
+        return $this->lastEditedTS;
+    }
+
+    public function getLastEdited()
+    {
+        $datetime = new \Datetime();
+
+        return $datetime->setTimeStamp(substr($this->lastEditedTS, 0, 10));        
+    }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    public function getGroup()
+    {
+        return $this->group === null ? 'none' : $this->group;
     }
 }
