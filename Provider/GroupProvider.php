@@ -78,6 +78,9 @@ class GroupProvider extends AbstractProvider
             'text' => $pad->getText(),
         ));
 
+        $pad->setEtherpadId(sprintf('%s$%s', $group->getEtherpadId(), $pad->getName()));
+        $this->padProvider->loadPad($pad);
+
         return true;
     }
 }

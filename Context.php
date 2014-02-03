@@ -22,6 +22,11 @@ class Context
     {
         return $this->config;
     }
+
+    public function getPublicUri()
+    {
+        return rtrim($this->config['public_uri'], '/');
+    }
  
     public function getApiUri()
     {

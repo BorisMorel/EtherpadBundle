@@ -27,4 +27,17 @@ interface PadInterface
     public function setMessage($message);
 
     public function getMessage();
+
+    public function setUrl($url);
+
+    public function getUrl();
+
+    public function setReadOnlyId($id);
+
+    public function getReadOnlyId();
+ 
+    public function setReadOnlyUrl($url);
+
+    public function getReadOnlyUrl();
+
 }

@@ -33,6 +33,7 @@
           
         <service id="imag_etherpad.abstract_provider" abstract="true">
           <argument type="service" id="imag_etherpad.url_manager" />
+          <argument type="service" id="imag_etherpad.context" />
         </service>
 
         <service id="imag_etherpad.pad_provider" class="%imag_etherpad.pad_provider.class%" parent="imag_etherpad.abstract_provider"/>

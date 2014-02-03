@@ -45,6 +45,23 @@ class Pad implements PadInterface
     private $lastEditedTS;
 
     /**
+     * @var string
+     */
+    private $url;
+
+    /**
+     * @var string
+     */
+    private $readOnlyId;
+    
+    /**
+     * @var string
+     */
+    private $readOnlyUrl;
+
+    
+
+    /**
      * @Assert\NotNull()
      */
     private $group;
@@ -58,6 +75,12 @@ class Pad implements PadInterface
         
     public function getName()
     {
+        if (null === $this->name) {
+            if (preg_match('/[^$]+$(.*)/', $this->etherpadId, $matches)) {
+                return $matches[0];
+            }
+        }
+
         return $this->name;
     }    
     
@@ -141,6 +164,42 @@ class Pad implements PadInterface
         return $datetime->setTimeStamp(substr($this->lastEditedTS, 0, 10));        
     }
 
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    public function setReadOnlyId($readOnlyId)
+    {
+        $this->readOnlyId = $readOnlyId;
+
+        return $this;
+    }
+
+    public function getReadOnlyId()
+    {
+        return $this->readOnlyId;
+    }
+
+    public function setReadOnlyUrl($readOnlyUrl)
+    {
+        $this->readOnlyUrl = $readOnlyUrl;
+
+        return $this;
+    }
+
+    public function getReadOnlyUrl()
+    {
+        return $this->readOnlyUrl;
+    }
+    
     public function setGroup($group)
     {
         $this->group = $group;
