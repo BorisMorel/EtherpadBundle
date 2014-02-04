@@ -103,8 +103,6 @@ class PadProvider extends AbstractProvider
 
     private function getReadOnlyUrl(PadInterface $pad)
     {
-        xdebug_break();
-
         $url = sprintf('%s/%s', $this->context->getPublicUri(), $pad->getReadOnlyId());
         $pad->setReadOnlyUrl($url);
         
