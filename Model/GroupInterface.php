@@ -8,6 +8,7 @@ interface GroupInterface
 {
     public function __construct();
 
+    public function setName($name);
     public function getName();
 
     public function setEtherpadId($id);
