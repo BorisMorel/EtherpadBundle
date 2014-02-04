@@ -38,7 +38,7 @@ class UrlManager
                 $url .= '&'
                     .$key
                     .'='
-                    .$param
+                    .urlencode($param)
                     ;
             }
         }
