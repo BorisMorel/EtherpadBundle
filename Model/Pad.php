@@ -11,6 +11,7 @@ class Pad implements PadInterface
     /**
      * @Assert\Type("string")
      * @Assert\NotBlank()
+     * @Assert\Regex("/^\w+$/")
      */
     private $name;
 
@@ -58,8 +59,6 @@ class Pad implements PadInterface
      * @var string
      */
     private $readOnlyUrl;
-
-    
 
     /**
      * @Assert\NotNull()
