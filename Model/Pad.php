@@ -11,7 +11,7 @@ class Pad implements PadInterface
     /**
      * @Assert\Type("string")
      * @Assert\NotBlank()
-     * @Assert\Regex("/^\w+$/")
+     * @Assert\Regex(pattern="/^\w+$/", message="pad.name.regex.invalid")
      */
     private $name;
 
