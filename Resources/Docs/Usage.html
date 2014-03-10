@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<h1 id="usage">Usage</h1>
+<h2 id="model">Model</h2>
+<p>You may use the default model provided by this bundle. But for each model an interface is available to use your own logical.</p>
+<ul>
+<li>PadInterface
+<ul>
+<li>Pad</li>
+</ul></li>
+<li>GroupInterface
+<ul>
+<li>Group</li>
+</ul></li>
+<li>SessionInterface
+<ul>
+<li>Session</li>
+</ul></li>
+<li>AuthorInterface
+<ul>
+<li>Author</li>
+</ul></li>
+</ul>
+<h2 id="provider">Provider</h2>
+<p>The provider is the Symfony representation of the etherpad-lite <a href="https://github.com/ether/etherpad-lite/wiki/HTTP-API">API</a>. Each API calling is a provider function.</p>
+<p>All providers are registered in the DIC with the name:</p>
+<ul>
+<li>imag_etherpad.pad_provider</li>
+<li>imag_etherpad.pads_provider</li>
+<li>imag_etherpad.group_provider</li>
+<li>imag_etherpad.groups_provider</li>
+<li>imag_etherpad.session_provider</li>
+<li>imag_etherpad.author_provider</li>
+</ul>
+<p>The provider function in the most cases need a model interface in first argument.</p>
+<pre class="sourceCode php"><code class="sourceCode php">class PadProvider extends AbstractProvider
+{
+    public function createPad(PadInterface $pad)
+    
+    public function setPublicStatus(PadInterface $pad, $bool)</code></pre>
+<h2 id="examples">Examples</h2>
+<p>It's really easy to integrate this bundle to your infrastructure</p>
+<h3 id="create-a-new-pad">Create a new Pad</h3>
+<pre class="sourceCode php"><code class="sourceCode php"><span class="kw">&lt;?php</span>
+<span class="kw">namespace</span> <span class="kw">IMAG</span>\FrontEtherpadBundle\Controller<span class="ot">;</span>
+
+<span class="co">/**</span>
+<span class="co"> * </span>@Route(&quot;/pad&quot;,<span class="co"> name=&quot;pad_create&quot;)</span>
+<span class="co"> * </span>@method(&quot;POST&quot;)
+<span class="co"> * </span>@Template(&quot;IMAGFrontEtherpadBundle:Pad:new.html.twig&quot;)
+<span class="co"> */</span>
+<span class="kw">public</span> <span class="kw">function</span> createAction<span class="ot">(</span>Request <span class="kw">$request</span><span class="ot">)</span>
+{
+    <span class="kw">$groupProvider</span> = <span class="kw">$this</span>-&gt;get<span class="ot">(</span><span class="st">&#39;imag_etherpad.group_provider&#39;</span><span class="ot">);</span>
+
+    <span class="kw">$form</span> = <span class="kw">$this</span>-&gt;createForm<span class="ot">(</span><span class="kw">new</span> PadType<span class="ot">(</span><span class="kw">$this</span>-&gt;getUser<span class="ot">()));</span>
+
+    <span class="kw">$form</span>-&gt;handleRequest<span class="ot">(</span><span class="kw">$request</span><span class="ot">);</span>
+
+    <span class="kw">if</span> <span class="ot">(</span><span class="kw">$form</span>-&gt;isValid<span class="ot">())</span> {
+        <span class="kw">$pad</span> = <span class="kw">$form</span>-&gt;getData<span class="ot">();</span>
+        <span class="kw">$groupProvider</span>-&gt;createGroupIfNotExistsFor<span class="ot">(</span><span class="kw">$pad</span>-&gt;getGroup<span class="ot">());</span>
+
+        <span class="kw">try</span> {
+            <span class="kw">$groupProvider</span>-&gt;createGroupPad<span class="ot">(</span><span class="kw">$pad</span>-&gt;getGroup<span class="ot">(),</span> <span class="kw">$pad</span><span class="ot">);</span>
+
+        } <span class="kw">catch</span> <span class="ot">(</span>\<span class="kw">IMAG</span>\EtherpadBundle\<span class="kw">Exception</span>\<span class="kw">InvalidArgumentException</span> <span class="kw">$e</span><span class="ot">)</span> {
+            <span class="kw">$this</span>-&gt;get<span class="ot">(</span><span class="st">&#39;session&#39;</span><span class="ot">)</span>-&gt;getFlashBag<span class="ot">()</span>-&gt;add<span class="ot">(</span><span class="st">&#39;danger&#39;</span><span class="ot">,</span> <span class="st">&#39;pad.create.name_exists&#39;</span><span class="ot">);</span>
+
+            <span class="kw">return</span> <span class="kw">$this</span>-&gt;redirect<span class="ot">(</span><span class="kw">$this</span>-&gt;generateUrl<span class="ot">(</span><span class="st">&#39;pad_new&#39;</span><span class="ot">));</span>
+
+        }
+
+        <span class="kw">if</span> <span class="ot">(</span><span class="kw">null</span> !== <span class="kw">$dispatcher</span> = <span class="kw">$this</span>-&gt;get<span class="ot">(</span><span class="st">&#39;event_dispatcher&#39;</span><span class="ot">))</span> {
+            <span class="kw">$event</span> = <span class="kw">new</span> PadEvent<span class="ot">(</span><span class="kw">$pad</span><span class="ot">);</span>
+            <span class="kw">$dispatcher</span>-&gt;dispatch<span class="ot">(</span>FrontEtherpadEvents::<span class="kw">PAD_CREATED</span><span class="ot">,</span> <span class="kw">$event</span><span class="ot">);</span>
+        }
+
+        <span class="kw">$this</span>-&gt;get<span class="ot">(</span><span class="st">&#39;session&#39;</span><span class="ot">)</span>-&gt;getFlashBag<span class="ot">()</span>-&gt;add<span class="ot">(</span><span class="st">&#39;success&#39;</span><span class="ot">,</span> <span class="st">&#39;pad.create.success&#39;</span><span class="ot">);</span>
+
+        <span class="kw">return</span> <span class="kw">$this</span>-&gt;redirect<span class="ot">(</span><span class="kw">$this</span>-&gt;generateUrl<span class="ot">(</span><span class="st">&#39;user_pads&#39;</span><span class="ot">));</span>
+    }
+
+    <span class="kw">return</span> <span class="fu">array</span><span class="ot">(</span>
+        <span class="st">&#39;form&#39;</span> =&gt; <span class="kw">$form</span>-&gt;createView<span class="ot">(),</span>
+    <span class="ot">);</span>
+}</code></pre>
+<h3 id="extends-your-model-to-use-this-bundle">Extends your model to use this Bundle</h3>
+<pre class="sourceCode php"><code class="sourceCode php"><span class="kw">&lt;?php</span>
+
+<span class="kw">namespace</span> <span class="kw">IMAG</span>\FrontEtherpadBundle\Entity<span class="ot">;</span>
+
+<span class="co">/**</span>
+<span class="co"> * </span>@ORM\Entity(repositoryClass=&quot;IMAG\FrontEtherpadBundle\Repository\UnitRepository&quot;)
+<span class="co"> * </span>@ORM\Table(name=&quot;Unit&quot;)
+<span class="co"> * </span>@UniqueEntity(fields={&quot;name&quot;},<span class="co"> message=&quot;unit.name.unique&quot;)</span>
+<span class="co"> * </span>@ORM\HasLifecycleCallbacks
+<span class="co"> */</span>
+<span class="kw">class</span> Unit <span class="kw">implements</span> GroupInterface
+{
+    <span class="co">/**</span>
+<span class="co">     * </span>@ORM\Id
+<span class="co">     * </span>@ORM\Column(type=&quot;integer&quot;)
+<span class="co">     * </span>@ORM\GeneratedValue(strategy=&quot;AUTO&quot;)
+<span class="co">     * </span>@Assert\Type(&quot;integer&quot;)
+<span class="co">     */</span>
+    <span class="kw">private</span> <span class="kw">$id</span><span class="ot">;</span>
+
+    <span class="co">/**</span>
+<span class="co">     * </span>@ORM\Column(type=&quot;string&quot;,<span class="co"> length=255, unique=true)</span>
+<span class="co">     * </span>@Assert\Type(&quot;string&quot;)
+<span class="co">     * </span>@Assert\NotBlank(message=&quot;unit.name.not_blank&quot;)
+<span class="co">     */</span>
+    <span class="kw">private</span> <span class="kw">$name</span><span class="ot">;</span>
+
+    <span class="co">/**</span>
+<span class="co">     * </span>@Assert\Type(&quot;object&quot;)
+<span class="co">     */</span>
+    <span class="kw">protected</span> <span class="kw">$pads</span><span class="ot">;</span>
+
+    <span class="kw">public</span> <span class="kw">function</span> <span class="fu">__construct</span><span class="ot">()</span>
+    {
+        <span class="kw">$this</span>-&gt;pads = <span class="kw">new</span> \<span class="kw">IMAG</span>\EtherpadBundle\Model\ArrayCollection<span class="ot">();</span>
+    }
+
+    <span class="co">/**</span>
+<span class="co">     * Get id</span>
+<span class="co">     *</span>
+<span class="co">     * </span><span class="kw">@return</span><span class="co"> integer </span>
+<span class="co">     */</span>
+    <span class="kw">public</span> <span class="kw">function</span> getId<span class="ot">()</span>
+    {
+        <span class="kw">return</span> <span class="kw">$this</span>-&gt;id<span class="ot">;</span>
+    }
+
+    <span class="co">/**</span>
+<span class="co">     * Set name</span>
+<span class="co">     *</span>
+<span class="co">     * </span><span class="kw">@param</span><span class="co"> </span><span class="kw">string</span><span class="co"> $name</span>
+<span class="co">     * </span><span class="kw">@return</span><span class="co"> User</span>
+<span class="co">     */</span>
+    <span class="kw">public</span> <span class="kw">function</span> setName<span class="ot">(</span><span class="kw">$name</span><span class="ot">)</span>
+    {
+        <span class="kw">$this</span>-&gt;name = <span class="kw">$name</span><span class="ot">;</span>
+
+        <span class="kw">return</span> <span class="kw">$this</span><span class="ot">;</span>
+    }
+
+    <span class="co">/**</span>
+<span class="co">     * Get name</span>
+<span class="co">     *</span>
+<span class="co">     * </span><span class="kw">@return</span><span class="co"> string </span>
+<span class="co">     */</span>
+    <span class="kw">public</span> <span class="kw">function</span> getName<span class="ot">()</span>
+    {
+        <span class="kw">return</span> <span class="kw">$this</span>-&gt;name<span class="ot">;</span>
+    }
+
+    <span class="co">/**</span>
+<span class="co">     * Set etherpadId</span>
+<span class="co">     * </span><span class="kw">@return</span><span class="co"> </span>\IMAG\FrontEtherpadBundle\Entity\Unit
+<span class="co">     */</span>
+    <span class="kw">public</span> <span class="kw">function</span> setEtherpadId<span class="ot">(</span><span class="kw">$id</span><span class="ot">)</span>
+    {
+        <span class="kw">$this</span>-&gt;etherpadId = <span class="kw">$id</span><span class="ot">;</span>
+        
+        <span class="kw">return</span> <span class="kw">$this</span><span class="ot">;</span>
+    }
+
+    <span class="co">/**</span>
+<span class="co">     * Get etherpadId</span>
+<span class="co">     *</span>
+<span class="co">     * </span><span class="kw">@return</span><span class="co"> string</span>
+<span class="co">     */</span>
+    <span class="kw">public</span> <span class="kw">function</span> getEtherpadId<span class="ot">()</span>
+    {
+        <span class="kw">return</span> <span class="kw">$this</span>-&gt;etherpadId<span class="ot">;</span>
+    }
+
+    <span class="kw">public</span> <span class="kw">function</span> addPad<span class="ot">(</span>Pad <span class="kw">$pad</span><span class="ot">)</span>
+    {
+        <span class="kw">if</span> <span class="ot">(</span><span class="kw">null</span> === <span class="kw">$this</span>-&gt;pads<span class="ot">)</span> {
+            <span class="kw">$this</span>-&gt;pads = <span class="kw">new</span> \<span class="kw">IMAG</span>\EtherpadBundle\Model\ArrayCollection<span class="ot">();</span>
+        }
+        
+        <span class="kw">$this</span>-&gt;pads<span class="ot">[</span><span class="kw">$pad</span>-&gt;getEtherpadId<span class="ot">()]</span> = <span class="kw">$pad</span><span class="ot">;</span>
+
+        <span class="kw">return</span> <span class="kw">$this</span><span class="ot">;</span>
+    }
+
+    <span class="kw">public</span> <span class="kw">function</span> getPads<span class="ot">()</span>
+    {
+        <span class="kw">return</span> <span class="kw">$this</span>-&gt;pads <span class="ot">?</span> <span class="kw">$this</span>-&gt;pads <span class="ot">:</span> <span class="fu">array</span><span class="ot">();;</span>
+    }
+
+}</code></pre>
+</body>
+</html>
